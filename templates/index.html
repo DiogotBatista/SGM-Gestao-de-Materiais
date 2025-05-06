@@ -1,0 +1,86 @@
+{% extends "base.html" %}
+{% load user_filters %}
+{% block title %}Página Principal - SGM{% endblock %}
+{% block content %}
+<div class="container mt-2">
+    {% if user.is_authenticated %}
+        <p class="small text-muted mb-1">
+            Usuário Logado: {{ user.get_full_name|default:user.first_name }}
+        </p>
+    {% endif %}
+</div>
+<div class="container mt-4">
+    <header class="mb-4 text-center">
+        <h1>SGM - Sistema de Gerenciamento de Materiais</h1>
+        {% if empresa %}
+            <h2 class="fs-2 mt-3">{{ empresa.nome }}</h2>
+        {% else %}
+            <h2 class="fs-2 text-danger mt-3">Empresa não definida</h2>
+        {% endif %}
+    </header>
+    <div class="row g-4 mt-4">
+        <!-- Card Materiais -->
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm border-0">
+                <div class="card-body d-flex flex-column text-center gap-3">
+                    <div>
+                        <i class="bi bi-box-seam display-4 text-success mb-3"></i>
+                        <h5 class="card-title">Materiais</h5>
+                        <p class="card-text">Cadastre e gerencie os materiais de construção civil.</p>
+                    </div>
+                    <div class="mt-auto">
+                        <a href="{% url 'lista_materiais' %}" class="btn btn-outline-success">Acessar</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Card Movimentações -->
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm border-0">
+                <div class="card-body d-flex flex-column text-center gap-3">
+                    <div>
+                        <i class="bi bi-arrow-repeat display-4 text-warning mb-3"></i>
+                        <h5 class="card-title">Movimentações</h5>
+                        <p class="card-text">Controle as entradas e saídas de materiais do almoxarifado.</p>
+                    </div>
+                    <div class="mt-auto">
+                        <a href="{% url 'dashboard_movimentacoes' %}" class="btn btn-outline-warning">Acessar</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- Card Configuração -->
+        <div class="col-md-4">
+            <div class="card h-100 shadow-sm border-0">
+                <div class="card-body d-flex flex-column text-center gap-3">
+                    <div>
+                        <i class="bi bi-gear-fill display-4 text-info mb-3"></i>
+                        <h5 class="card-title">Configuração</h5>
+                        <p class="card-text">Gerencie obras, contratos e contratantes.</p>
+                    </div>
+                    <div class="mt-auto">
+                        <a href="{% url 'menu_config' %}" class="btn btn-outline-info">Acessar</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- Nova linha para o app de Relatórios -->
+    <div class="row g-4 mt-4">
+        <div class="col-md-4 offset-md-4">
+            <div class="card h-100 shadow-sm border-0">
+                <div class="card-body d-flex flex-column text-center gap-3">
+                    <div>
+                        <i class="bi bi-file-earmark-text display-4 text-secondary mb-3"></i>
+                        <h5 class="card-title">Relatórios</h5>
+                        <p class="card-text">Gere relatórios detalhados de materiais, movimentações, obras e contratos.</p>
+                    </div>
+                    <div class="mt-auto">
+                        <a href="{% url 'painel_relatorios' %}" class="btn btn-outline-secondary">Acessar</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

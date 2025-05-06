@@ -1,0 +1,166 @@
+{% extends "base.html" %}
+{% load custom_filters %}
+{% block title %}Cadastrar Movimentação de Entrada{% endblock %}
+{% block content %}
+<div class="container mt-4">
+  <h1 class="mb-4">Cadastrar Movimentação de Entrada</h1>
+
+  {# Bloco para exibir mensagens de erro do formulário #}
+  {% if form.errors %}
+    <div class="alert alert-danger alert-dismissible fade show" role="alert">
+      <strong>Por favor, corrija os erros abaixo:</strong>
+      <ul class="mb-0">
+        {% for field in form %}
+          {% for error in field.errors %}
+            <li><strong>{{ field.label }}:</strong> {{ error }}</li>
+          {% endfor %}
+        {% endfor %}
+        {% for error in form.non_field_errors %}
+            <li>{{ error }}</li>
+        {% endfor %}
+      </ul>
+      <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+    </div>
+  {% endif %}
+
+  <form method="post" novalidate id="movimentacaoForm">
+    {% csrf_token %}
+    <!-- Dados da Movimentação -->
+    <div class="card mb-4">
+      <div class="card-header">Dados da Movimentação de entrada de material</div>
+      <div class="card-body">
+        {{ form.as_p }}
+      </div>
+    </div>
+
+    <!-- Seleção de Materiais -->
+    <div class="card mb-4">
+      <div class="card-header">Adicionar Material</div>
+      <div class="card-body">
+        <div class="row">
+          <!-- Campo de pesquisa com autocomplete -->
+          <div class="col-md-6">
+            <input type="text" id="materialSearch" class="form-control" placeholder="Pesquisar material por nome ou código">
+            <!-- Campo oculto para armazenar o ID do material selecionado -->
+            <input type="hidden" id="materialId">
+          </div>
+          <!-- Campo para quantidade -->
+          <div class="col-md-3">
+            <input type="number" id="materialQuantidade" class="form-control" placeholder="Quantidade">
+          </div>
+          <!-- Botão para adicionar -->
+          <div class="col-md-3">
+            <button type="button" id="addMaterial" class="btn btn-outline-primary">
+              <i class="bi bi-plus-circle"></i> Adicionar
+            </button>
+          </div>
+        </div>
+        <!-- Tabela para exibir os materiais adicionados -->
+        <table class="table table-bordered mt-3" id="listaMateriais">
+          <thead>
+            <tr>
+              <th class="text-center">Material</th>
+              <th class="text-center">Código</th>
+              <th class="text-center">Quantidade</th>
+              <th class="text-center">Ações</th>
+            </tr>
+          </thead>
+          <tbody>
+            <!-- Linhas serão adicionadas dinamicamente -->
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- Botões de ação -->
+    <div class="d-flex justify-content-between">
+      <button type="submit" class="btn btn-primary">
+        <i class="bi bi-save"></i> Salvar Movimentação
+      </button>
+      <a href="{% url 'dashboard_movimentacoes' %}" class="btn btn-secondary">
+        <i class="bi bi-x-circle"></i> Cancelar
+      </a>
+    </div>
+  </form>
+</div>
+{% endblock %}
+
+{% block extra_js %}
+<!-- Inclua jQuery e jQuery UI (para autocomplete) se ainda não estiverem presentes -->
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+<script src="https://code.jquery.com/ui/1.13.2/jquery-ui.min.js"></script>
+<link rel="stylesheet" href="https://code.jquery.com/ui/1.13.2/themes/base/jquery-ui.css">
+
+<script>
+$(document).ready(function(){
+    // Validação do campo "documento" antes de submeter o formulário
+    $("#movimentacaoForm").submit(function(e){
+        if (!$("#id_documento").val()) {
+            e.preventDefault(); // Impede o envio do formulário
+            alert("O documento é obrigatório para a entrada.");
+            $("#id_documento").focus();
+            return false;
+        }
+    });
+
+    // Configura o autocomplete para o campo de busca
+    $("#materialSearch").autocomplete({
+        source: "{% url 'api_materials' %}", // Endpoint que retorna uma lista de materiais no formato JSON
+        minLength: 1,
+        select: function(event, ui) {
+            // Armazena o id do material selecionado e atualiza o campo com o nome/código
+            $("#materialId").val(ui.item.id);
+            $("#materialSearch").val(ui.item.label);
+            return false;
+        }
+    });
+
+    // Adiciona o material à lista
+    $("#addMaterial").click(function(){
+        var materialId = $("#materialId").val();
+        var materialName = $("#materialSearch").val();
+        var quantidade = $("#materialQuantidade").val();
+
+        // Valida se os campos foram preenchidos corretamente
+        if(!materialId || !materialName){
+            alert("Selecione um material válido.");
+            return;
+        }
+        if(!quantidade || quantidade <= 0){
+            alert("Informe uma quantidade válida.");
+            return;
+        }
+
+        // Cria uma nova linha com inputs ocultos para enviar os dados
+        var row = `<tr>
+                      <td>
+                        <input type="hidden" name="material_id[]" value="${materialId}">
+                        ${materialName}
+                      </td>
+                      <td>${materialId}</td>
+                      <td>
+                        <input type="hidden" name="quantidade[]" value="${quantidade}">
+                        ${quantidade}
+                      </td>
+                      <td>
+                        <button type="button" class="btn btn-danger btn-sm remove-material">
+                          <i class="bi bi-trash"></i> Remover
+                        </button>
+                      </td>
+                  </tr>`;
+        $("#listaMateriais tbody").append(row);
+
+        // Limpa os campos para a próxima inclusão
+        $("#materialSearch").val('');
+        $("#materialId").val('');
+        $("#materialQuantidade").val('');
+    });
+
+    // Permite remover materiais da lista
+    $("#listaMateriais").on("click", ".remove-material", function(){
+        $(this).closest("tr").remove();
+    });
+});
+</script>
+
+{% endblock %}

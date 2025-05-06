@@ -1,0 +1,103 @@
+{% extends "base.html" %}
+{% block title %}Detalhes da Movimentação{% endblock %}
+{% block content %}
+<div class="container mt-4">
+  <h1>Detalhes da Movimentação</h1>
+
+  <div class="card mb-4">
+    <div class="card-header">
+      Código: {{ movimentacao.codigo }}
+    </div>
+    <div class="card-body">
+      <p><strong>Tipo:</strong> {{ movimentacao.tipo }}</p>
+      {% if movimentacao.obra %}
+        <p><strong>Obra:</strong> {{ movimentacao.obra|default:"-" }}</p>
+      {% endif %}
+      {% if movimentacao.documento %}
+        <p><strong>Documento:</strong> {{ movimentacao.documento|default:"-" }}</p>
+      {% endif %}
+      <p><strong>Data da Movimentação:</strong> {{ movimentacao.data_movimentacao|date:"d/m/Y H:i" }}</p>
+      <p><strong>Realizado por:</strong>
+        {% if movimentacao.realizado_por %}
+          {{ movimentacao.realizado_por.get_full_name|default:movimentacao.realizado_por.username }}
+        {% else %}
+          -
+        {% endif %}
+      </p>
+      <p><strong>Observações:</strong> {{ movimentacao.observacoes|default:"-" }}</p>
+    </div>
+  </div>
+
+  <h2 class="mb-3">Itens da Movimentação</h2>
+  <div class="table-responsive">
+    <table class="table table-striped table-bordered table-hover align-middle">
+      <thead class="table-light">
+        <tr>
+          <th class="text-center">Cod.</th>
+          <th class="text-center">Matetial</th>
+          <th class="text-center">Quantidade</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for item in itens_paginated %}
+          <tr>
+            <td class="text-center">{{ item.id }}</td>
+            <td>{{ item.material }}</td>
+            <td class="text-center">{{ item.quantidade }}</td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td colspan="3" class="text-center">Nenhum item cadastrado.</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Paginação dos itens -->
+  {% if itens_paginated.has_other_pages %}
+  <nav aria-label="Paginação de itens">
+    <ul class="pagination justify-content-center">
+      {% if itens_paginated.has_previous %}
+      <li class="page-item">
+        <a class="page-link" href="?page={{ itens_paginated.previous_page_number }}" aria-label="Anterior">&laquo;</a>
+      </li>
+      {% else %}
+      <li class="page-item disabled"><span class="page-link">&laquo;</span></li>
+      {% endif %}
+
+      {% for num in itens_paginated.paginator.page_range %}
+        {% if itens_paginated.number == num %}
+        <li class="page-item active">
+          <span class="page-link">{{ num }}</span>
+        </li>
+        {% else %}
+        <li class="page-item">
+          <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+        </li>
+        {% endif %}
+      {% endfor %}
+
+      {% if itens_paginated.has_next %}
+      <li class="page-item">
+        <a class="page-link" href="?page={{ itens_paginated.next_page_number }}" aria-label="Próximo">&raquo;</a>
+      </li>
+      {% else %}
+      <li class="page-item disabled"><span class="page-link">&raquo;</span></li>
+      {% endif %}
+    </ul>
+  </nav>
+  {% endif %}
+
+  <!-- Botão de impressão -->
+  <div class="text-center mt-3">
+    <a href="{% url 'movimentacao_print' movimentacao.pk %}" target="_blank" class="btn btn-primary">
+      <i class="bi bi-printer"></i> Imprimir Guia de movimentação
+    </a>
+  </div>
+
+  <a href="{% url 'lista_movimentacoes' %}" class="btn btn-secondary mt-3">
+    <i class="bi bi-arrow-left"></i> Voltar
+  </a>
+</div>
+{% endblock %}

@@ -1,0 +1,82 @@
+{% extends "base.html" %}
+{% load custom_filters %}
+{% block title %}Imprimir Movimentação - {{ movimentacao.codigo|default:"Sem Código" }}{% endblock %}
+{% block content %}
+<div class="container mt-4 print-container">
+  <div class="card">
+    <div class="card-header text-center">
+      <h1>Movimentação de {{ movimentacao.tipo }}</h1>
+    </div>
+    <div class="card-body">
+      <p><strong>Código:</strong> {{ movimentacao.codigo }}</p>
+      {% if movimentacao.documento %}
+        <p><strong>Documento:</strong> {{ movimentacao.documento }}</p>
+      {% endif %}
+      {% if movimentacao.obra %}
+        <p><strong>Obra:</strong> {{ movimentacao.obra }}</p>
+        <p><strong>Contrato:</strong> {{ movimentacao.obra.contrato}}</p>
+      {% endif %}
+      <p><strong>Data:</strong> {{ movimentacao.data_movimentacao|date:"d/m/Y H:i" }}</p>
+      <p><strong>Realizado por:</strong> {{ movimentacao.realizado_por.get_full_name }}</p>
+      <p><strong>Observações:</strong> {{ movimentacao.observacoes|default:"-" }}</p>
+
+      <h3 class="mt-4">Itens</h3>
+      <div class="table-responsive">
+        <table class="table table-bordered">
+          <thead class="table-light">
+            <tr>
+              <th class="text-center">Material</th>
+              <th class="text-center">ID</th>
+              <th class="text-center">Quantidade</th>
+            </tr>
+          </thead>
+          <tbody>
+            {% for item in movimentacao.itens.all %}
+            <tr>
+              <td>{{ item.material.nome }}</td>
+              <td class="text-center">{{ item.material.id }}</td>
+              <td class="text-center">{{ item.quantidade }}</td>
+            </tr>
+            {% empty %}
+            <tr>
+              <td colspan="3" class="text-center">Nenhum item encontrado.</td>
+            </tr>
+            {% endfor %}
+          </tbody>
+        </table>
+      </div>
+
+      <div class="signature mt-5 text-center">
+        <p>______________________________________</p>
+        <p><strong>Assinatura do Responsável</strong></p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div class="no-print text-center mt-4" style="position: relative; z-index: 10;">
+  <button class="btn btn-primary" onclick="window.print()">Imprimir</button>
+  <a href="{% url 'dashboard_movimentacoes' %}" class="btn btn-secondary">Voltar</a>
+</div>
+{% endblock %}
+
+{% block extra_css %}
+<style>
+  @media print {
+    .no-print {
+      display: none !important;
+    }
+    .print-container {
+      width: 100%;
+      margin: 0;
+    }
+  }
+  /* Estilos adicionais para a impressão */
+  .card {
+    border: 1px solid #ccc;
+  }
+  .signature p {
+    margin: 0;
+  }
+</style>
+{% endblock %}

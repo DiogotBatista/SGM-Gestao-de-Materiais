@@ -1,0 +1,4 @@
+Almoxarife
+Gestor
+Comprador
+Operador

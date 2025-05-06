@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+{% block title %}Excluir Contrato{% endblock %}
+{% block content %}
+<div class="container mt-4">
+  <div class="row justify-content-center">
+    <div class="col-md-6">
+      <div class="card shadow-sm">
+        <div class="card-header bg-danger text-white">
+          <h2 class="mb-0">Excluir Contrato</h2>
+        </div>
+        <div class="card-body">
+          <p class="lead">Tem certeza que deseja excluir o contrato <strong>{{ object.nome }}</strong>?</p>
+          <p class="lead">
+            Caso o contrato não esteja mais ativo, desmarque o campo <strong>"ATIVO"</strong> no formulário de
+            <strong><a href="{% url 'editar_contratos' object.pk %}">EDIÇÃO</a></strong>, ao invés de deletá-lo.
+          </p>
+          <form method="post">
+            {% csrf_token %}
+            <div class="d-flex justify-content-between">
+              <button type="submit" class="btn btn-danger">
+                <i class="bi bi-trash"></i> Confirmar Exclusão
+              </button>
+              <a href="{% url 'lista_contratos' %}" class="btn btn-secondary">
+                <i class="bi bi-x-circle"></i> Cancelar
+              </a>
+            </div>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}

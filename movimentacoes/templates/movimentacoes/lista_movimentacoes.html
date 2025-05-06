@@ -1,0 +1,91 @@
+{% extends "base.html" %}
+{% block title %}Lista de Movimentações{% endblock %}
+{% block content %}
+<div class="container mt-4">
+  <h1>Lista de Movimentações</h1>
+
+  <!-- Formulário de Pesquisa -->
+  <form method="get" class="mb-3">
+    <div class="input-group">
+      <input type="text" name="q" value="{{ request.GET.q }}" class="form-control" placeholder="Pesquisar cod. movimentação, obra ou documento...">
+      <button class="btn btn-outline-secondary" type="submit">
+        <i class="bi bi-search"></i> Pesquisar
+      </button>
+      <a href="{% url 'lista_movimentacoes' %}" class="btn btn-outline-secondary">
+        <i class="bi bi-eraser"></i> Limpar
+      </a>
+    </div>
+  </form>
+
+  <!-- Tabela de Movimentações -->
+  <div class="table-responsive">
+    <table class="table table-striped table-bordered table-hover align-middle">
+      <thead class="table-light">
+        <tr>
+          <th class="text-center">Código</th>
+          <th class="text-center">Obra</th>
+          <th class="text-center">Tipo</th>
+          <th class="text-center">Documento</th>
+          <th class="text-center">Data da Movimentação</th>
+          <th class="text-center">Realizado por</th>
+          <th class="text-center">Observações</th>
+          <th class="text-center">Ações</th>
+        </tr>
+      </thead>
+      <tbody>
+        {% for movimentacao in movimentacoes %}
+          <tr>
+            <td class="text-center">{{ movimentacao.codigo }}</td>
+            <td>{{ movimentacao.obra |default:"-" }}</td>
+            <td class="text-center">{{ movimentacao.tipo }}
+            <td class="text-center">{{ movimentacao.documento |default:"-" }}</td>
+            <td class="text-center">{{ movimentacao.data_movimentacao|date:"d/m/Y H:i" }}</td>
+            <td>
+              {% if movimentacao.realizado_por %}
+                {{ movimentacao.realizado_por.get_full_name|default:movimentacao.realizado_por.username }}
+              {% else %}
+                -
+              {% endif %}
+            </td>
+            <td>{{ movimentacao.observacoes|default:"-" }}</td>
+            <td>
+              <a href="{% url 'detalhe_movimentacoes' movimentacao.pk %}" class="btn btn-info btn-sm">
+                <i class="bi bi-info-circle"></i> Detalhes
+              </a>
+            </td>
+          </tr>
+        {% empty %}
+          <tr>
+            <td colspan="8" class="text-center">Nenhuma movimentação encontrada.</td>
+          </tr>
+        {% endfor %}
+      </tbody>
+    </table>
+  </div>
+
+  <!-- Paginação -->
+  {% if is_paginated %}
+  <nav aria-label="Navegação de página">
+    <ul class="pagination justify-content-center">
+      {% if page_obj.has_previous %}
+      <li class="page-item">
+        <a class="page-link" href="?q={{ request.GET.q }}&page={{ page_obj.previous_page_number }}" aria-label="Anterior">&laquo;</a>
+      </li>
+      {% endif %}
+      {% for num in page_obj.paginator.page_range %}
+        {% if page_obj.number == num %}
+        <li class="page-item active"><span class="page-link">{{ num }}</span></li>
+        {% else %}
+        <li class="page-item"><a class="page-link" href="?q={{ request.GET.q }}&page={{ num }}">{{ num }}</a></li>
+        {% endif %}
+      {% endfor %}
+      {% if page_obj.has_next %}
+      <li class="page-item">
+        <a class="page-link" href="?q={{ request.GET.q }}&page={{ page_obj.next_page_number }}" aria-label="Próximo">&raquo;</a>
+      </li>
+      {% endif %}
+    </ul>
+  </nav>
+  {% endif %}
+</div>
+{% endblock %}

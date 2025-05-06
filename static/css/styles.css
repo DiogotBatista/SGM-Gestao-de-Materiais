@@ -1,0 +1,9 @@
+.navbar-nav .nav-link {
+  transition: background-color 0.3s ease, color 0.3s ease;
+}
+
+.navbar-nav .nav-link:hover {
+  background-color: rgba(0, 123, 255, 0.1); /* Fundo levemente azul */
+  color: #007bff; /* Cor do texto azul */
+  border-radius: 4px; /* Bordas arredondadas para um efeito suave */
+}

@@ -1,0 +1,54 @@
+{% extends "base.html" %}
+{% load user_filters %}
+{% block title %}Movimentações - Dashboard{% endblock %}
+{% block content %}
+<div class="container mt-4">
+  <div class="row g-4">
+    <!-- Card para Listar Movimentações -->
+    <div class="col-md-4">
+      <div class="card h-100 shadow-sm border-0">
+        <div class="card-body d-flex flex-column text-center gap-3">
+          <div>
+            <i class="bi bi-list-ul display-4 text-primary mb-3"></i>
+            <h5 class="card-title">Listar Movimentações</h5>
+            <p class="card-text">Visualize o histórico de movimentações e filtre por contrato, obra ou material.</p>
+          </div>
+          <div class="mt-auto">
+            <a href="{% url 'lista_movimentacoes' %}" class="btn btn-outline-primary">Acessar Lista</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Card para Nova Entrada -->
+    <div class="col-md-4">
+      <div class="card h-100 shadow-sm border-0">
+        <div class="card-body d-flex flex-column text-center gap-3">
+          <div>
+            <i class="bi bi-arrow-down-circle display-4 text-success mb-3"></i>
+            <h5 class="card-title">Nova Entrada</h5>
+            <p class="card-text">Registre uma nova entrada de materiais.</p>
+          </div>
+          <div class="mt-auto">
+            <a href="{% url 'cadastrar_movimentacao_entrada' %}" class="btn btn-outline-success">Registrar Entrada</a>
+          </div>
+        </div>
+      </div>
+    </div>
+    <!-- Card para Nova Saída -->
+    <div class="col-md-4">
+      <div class="card h-100 shadow-sm border-0">
+        <div class="card-body d-flex flex-column text-center gap-3">
+          <div>
+            <i class="bi bi-arrow-up-circle display-4 text-danger mb-3"></i>
+            <h5 class="card-title">Nova Saída</h5>
+            <p class="card-text">Registre uma nova saída de materiais.</p>
+          </div>
+          <div class="mt-auto">
+            <a href="{% url 'cadastrar_movimentacao_saida' %}" class="btn btn-outline-danger">Registrar Saída</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+{% endblock %}
