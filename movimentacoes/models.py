@@ -33,6 +33,13 @@ class Movimentacao(models.Model):
         blank=True,
         verbose_name='Realizado por'
     )
+    responsavel_movimentacao = models.CharField(
+        max_length=100,
+        blank=True,
+        null=True,
+        verbose_name="Responsável pela Liberação/Recebimento",
+        help_text="Nome da pessoa que liberou/recebeu o material"
+    )
     observacoes = models.TextField(blank=True, null=True, verbose_name='Observações gerais')
 
     class Meta:

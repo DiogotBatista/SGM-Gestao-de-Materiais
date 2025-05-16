@@ -35,23 +35,17 @@ class ContratanteForm(forms.ModelForm):
 class ContratoForm(forms.ModelForm):
     class Meta:
         model = Contrato
-        fields = ['numero', 'contratante', 'data_inicio', 'data_fim', 'descricao', 'ativo']
+        fields = ['numero', 'contratante', 'ativo']
         labels = {
             'numero': 'Contrato',
             'contratante': 'Contratante',
-            'data_inicio': 'Data de Início',
-            'data_fim': 'Data de Fim',
-            'descricao': 'Descrição',
             'ativo': 'Ativo',
         }
         help_texts = {
             'numero': 'Número do contrato',
-            'descricao': 'Descrição ou observações sobre o contrato',
             'ativo': 'Indica se o contrato está ativo',
         }
         widgets = {
-            'data_inicio': DateInput(attrs={'type': 'date'}),
-            'data_fim': DateInput(attrs={'type': 'date'}),
             'ativo': forms.CheckboxInput(attrs={'class': 'form-check-input'}),
         }
 
@@ -64,19 +58,17 @@ class ContratoForm(forms.ModelForm):
 class ObraForm(forms.ModelForm):
     class Meta:
         model = Obra
-        fields = ['codigo', 'contrato', 'descricao', 'local', 'ativo']
+        fields = ['codigo', 'contrato', 'local', 'ativo']
         labels = {
             'codigo': 'Cod. Obra',
             'local': 'Local',
             'contrato': 'Contrato',
-            'descricao': 'Descrição',
             'ativo': 'Ativo',
         }
         help_texts = {
             'codigo': 'Código da obra/serviço',
             'local': 'Local de execução da obra',
             'contrato': 'Informar o contrato da obra',
-            'descricao': 'Descrição ou observações sobre a obra',
             'ativo': 'Indica se a obra está ativa',
         }
         widgets = {

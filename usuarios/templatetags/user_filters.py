@@ -9,3 +9,11 @@ def has_group(user, group_name):
 @register.filter(name='add_class')
 def add_class(field, css):
     return field.as_widget(attrs={"class": css})
+
+@register.filter
+def split(value, key):
+    return value.split(key)
+
+@register.filter
+def last(value):
+    return value[-1] if isinstance(value, (list, tuple)) else ''

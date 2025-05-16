@@ -34,7 +34,6 @@ class MovimentoItemEntradaForm(forms.ModelForm):
         self.instance.tipo = MovimentoItem.ENTRADA
         return super().save(commit=commit)
 
-
 class MovimentoItemSaidaForm(forms.ModelForm):
     class Meta:
         model = MovimentoItem
@@ -59,11 +58,10 @@ class MovimentoItemSaidaForm(forms.ModelForm):
         self.instance.tipo = MovimentoItem.SAIDA
         return super().save(commit=commit)
 
-
 class MovimentacaoEntradaForm(forms.ModelForm):
     class Meta:
         model = Movimentacao
-        fields = ['documento', 'observacoes']
+        fields = ['documento', 'responsavel_movimentacao', 'observacoes']
         labels = {
             'documento': 'Documento de Origem',
             'observacoes': 'Observações',
@@ -81,11 +79,10 @@ class MovimentacaoEntradaForm(forms.ModelForm):
         self.fields['documento'].required = True
         self.fields['documento'].error_messages = {'required': 'O documento de origem é obrigatório.'}
 
-
 class MovimentacaoSaidaForm(forms.ModelForm):
     class Meta:
         model = Movimentacao
-        fields = ['obra', 'observacoes']
+        fields = ['obra', 'responsavel_movimentacao', 'observacoes']
         labels = {
             'obra': 'Obra',
             'observacoes': 'Observações',
@@ -100,7 +97,7 @@ class MovimentacaoSaidaForm(forms.ModelForm):
         self.fields['obra'].required = True
         self.fields['obra'].error_messages = {'required': 'A obra é obrigatória para a saída.'}
         self.fields['obra'].queryset = self.fields['obra'].queryset.filter(ativo=True)
-
+        self.fields['obra'].label_from_instance = lambda obj: f"{obj.codigo} - ({obj.contrato.numero})"
 
 # Formset customizado para validação de itens de movimentação de saída
 class BaseMovimentoItemSaidaFormSet(BaseInlineFormSet):
@@ -125,7 +122,6 @@ class BaseMovimentoItemSaidaFormSet(BaseInlineFormSet):
                 raise forms.ValidationError(
                     f"Quantidade para saída ({quantidade}) excede o saldo disponível ({material.saldo_total}) para o material {material}."
                 )
-
 
 # Definição do formset de saída utilizando o form customizado e o formset customizado
 MovimentoItemSaidaFormSet = inlineformset_factory(

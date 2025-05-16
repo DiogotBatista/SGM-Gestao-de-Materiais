@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Contratante, Contrato, Obra, Empresa_usuario
+from .models import Contratante, Contrato, Obra, Aviso
 
 @admin.register(Contratante)
 class ContratanteAdmin(admin.ModelAdmin):
@@ -25,9 +25,9 @@ class ContratanteAdmin(admin.ModelAdmin):
 
 @admin.register(Contrato)
 class ContratoAdmin(admin.ModelAdmin):
-    list_display = ('numero', 'contratante', 'data_inicio', 'data_fim', 'ativo', 'get_created_by','data_cadastro', 'get_updated_by','data_alteracao')
+    list_display = ('numero', 'contratante', 'ativo', 'get_created_by','data_cadastro', 'get_updated_by','data_alteracao')
     search_fields = ('numero', 'contratante__nome')
-    list_filter = ('ativo', 'data_inicio', 'data_fim', 'contratante')
+    list_filter = ('ativo', 'contratante')
     ordering = ('numero',)
 
     def get_created_by(self, obj):
@@ -67,6 +67,8 @@ class ObraAdmin(admin.ModelAdmin):
 
     get_updated_by.short_description = 'Resp. Atualização'
 
-@admin.register(Empresa_usuario)
-class ObraAdmin(admin.ModelAdmin):
-    list_display = ('nome', )
+@admin.register(Aviso)
+class AvisoAdmin(admin.ModelAdmin):
+    list_display = ('mensagem', 'tipo', 'ativo', 'criado_em')
+    list_filter = ('tipo', 'ativo')
+    search_fields = ('mensagem',)

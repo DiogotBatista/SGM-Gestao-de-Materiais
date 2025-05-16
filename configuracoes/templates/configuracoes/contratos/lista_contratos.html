@@ -32,7 +32,6 @@
                     <th class="text-center">Cod.</th>
                     <th class="text-center">Contrato</th>
                     <th class="text-center">Contratante</th>
-                    <th class="text-center">Desccrição</th>
                     <th class="text-center">Ativo</th>
                     <th class="text-center" style="min-width: 170px;">Ações</th>
 
@@ -44,7 +43,6 @@
                         <td class="text-center">{{ contrato.id }}</td>
                         <td class="text-center">{{ contrato.numero }}</td>
                         <td class="text-center">{{ contrato.contratante.nome }}</td>
-                        <td class="text-center">{{ contrato.descricao }}</td>
                         <td class="text-center">
                         {% if contrato.ativo %}
                             <span class="badge bg-success">Ativo</span>

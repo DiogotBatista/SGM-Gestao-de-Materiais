@@ -17,13 +17,14 @@
         <p><strong>Documento:</strong> {{ movimentacao.documento|default:"-" }}</p>
       {% endif %}
       <p><strong>Data da Movimentação:</strong> {{ movimentacao.data_movimentacao|date:"d/m/Y H:i" }}</p>
-      <p><strong>Realizado por:</strong>
+      <p><strong>Cadastrado por:</strong>
         {% if movimentacao.realizado_por %}
           {{ movimentacao.realizado_por.get_full_name|default:movimentacao.realizado_por.username }}
         {% else %}
           -
         {% endif %}
       </p>
+      <p><strong>Resp. pela Lib./Rec.:</strong> {{ movimentacao.responsavel_movimentacao|default:"-" }}</p>
       <p><strong>Observações:</strong> {{ movimentacao.observacoes|default:"-" }}</p>
     </div>
   </div>

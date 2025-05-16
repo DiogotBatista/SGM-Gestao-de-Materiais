@@ -8,138 +8,146 @@
     <meta name="viewport" content="width=device-width, initial-scale=1">
     <link rel="icon" href="{% static 'images/favicon2.ico' %}">
     <meta name="description" content="SGM - Sistema de Gestão de Materiais">
-    <!-- Bootstrap CSS -->
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet"
-          integrity="sha384-T3c6CoIi6uLrA9TneNEoa7RxnatzjcDSCmG1MXxSR1GAsXEV/Dwwykc2MPK8M2HN" crossorigin="anonymous">
-    <!-- Bootstrap Icons -->
-    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.3/font/bootstrap-icons.css">
+
+    <!-- Bootstrap CSS (Cloudflare CDN) -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/css/bootstrap.min.css" rel="stylesheet">
+
+    <!-- Bootstrap Icons (Cloudflare CDN) -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/bootstrap-icons/1.10.3/font/bootstrap-icons.min.css" rel="stylesheet">
+
     {% block extra_head %}
-        <!-- Exemplo: arquivo CSS customizado -->
-
-<!--        <link rel="stylesheet" href="{% static 'css/styles.css' %}">-->
-
     <style>
         .navbar-nav .nav-link {
           transition: background-color 0.3s ease, color 0.3s ease;
         }
 
         .navbar-nav .nav-link:hover {
-          background-color: rgba(0, 123, 255, 0.1); /* Fundo levemente azul */
-          color: #007bff; /* Cor do texto azul */
-          border-radius: 4px; /* Bordas arredondadas para um efeito suave */
+          background-color: rgba(0, 123, 255, 0.1);
+          color: #007bff;
+          border-radius: 4px;
         }
 
         .ui-autocomplete {
             z-index: 9999;
         }
-
     </style>
     {% endblock extra_head %}
 </head>
 <body class="d-flex flex-column min-vh-100">
-    <header>
-        {% block header %}
-        <!-- Navbar fixa com fixed-top -->
-        <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
-            <div class="container-fluid">
-                <a class="navbar-brand" href="{% url 'index' %}">
-                    <i class="bi bi-box-seam"></i> SGM
-                </a>
-                <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
-                        aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
-                    <span class="navbar-toggler-icon"></span>
-                </button>
+<header>
+    {% block header %}
+    <nav class="navbar navbar-expand-lg navbar-light bg-light fixed-top">
+        <div class="container-fluid">
+            <a class="navbar-brand" href="{% url 'index' %}">
+                <i class="bi bi-box-seam"></i> SGM
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav"
+                    aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+                <span class="navbar-toggler-icon"></span>
+            </button>
 
-                <div class="collapse navbar-collapse" id="navbarNav">
-                    {% if user.is_authenticated %}
-                    <ul class="navbar-nav me-auto">
-                        <li class="nav-item">
-                            <a class="nav-link active" aria-current="page" href="{% url 'index' %}">
-                                <i class="bi bi-house"></i> Home
-                            </a>
-                        </li>
-
-                         <li class="nav-item">
-                            <a class="nav-link" href="{% url 'lista_materiais' %}">
-                                <i class="bi bi-box-seam"></i> Materiais
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'dashboard_movimentacoes' %}">
-                                <i class="bi bi-arrow-repeat"></i> Movimentações
-                            </a>
-                        </li>
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'painel_relatorios' %}">
-                                <i class="bi bi-file-earmark-text"></i> Relatórios
-                            </a>
-                        </li>
-                          <li class="nav-item dropdown">
-                            <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-                                <i class="bi bi-gear"></i> Configurações
-                            </a>
-                              <div class="dropdown-menu" aria-labelledby="navbarDropdown">
-                                  <a class="dropdown-item" href="{% url 'lista_usuarios' %}"><i class="bi bi-people-fill"></i> Usuários</a>
-                                  <a class="dropdown-item" href="{% url 'lista_contratantes' %}"><i class="bi bi bi-buildings"></i> Contratantes</a>
-                                  <a class="dropdown-item" href="{% url 'lista_contratos' %}"><i class="bi bi-file-earmark-text"></i> Contratos</a>
-                                  <a class="dropdown-item" href="{% url 'lista_obras' %}"><i class="bi bi-building"></i> Obras</a>
-                              </div>
-                        </li>
-                        {% if user.is_superuser  %}
-                            <li class="nav-item">
-                                <a class="nav-link" href="{% url 'admin:index' %}">
-                                    <i class="bi bi-database-fill"></i> Admin
-                                </a>
-                            </li>
-                        {% endif %}
-                    </ul>
-                    <ul class="navbar-nav">
-                        {% if user.is_authenticated %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'logout' %}">
-                                <i class="bi bi-box-arrow-right"></i> Logout
-                            </a>
-                        </li>
-                        {% else %}
-                        <li class="nav-item">
-                            <a class="nav-link" href="{% url 'login' %}">
-                                <i class="bi bi-box-arrow-in-right"></i> Login
-                            </a>
-                        </li>
-                        {% endif %}
+            <div class="collapse navbar-collapse" id="navbarNav">
+                {% if user.is_authenticated %}
+                <ul class="navbar-nav me-auto">
+                    <li class="nav-item">
+                        <a class="nav-link active" aria-current="page" href="{% url 'index' %}">
+                            <i class="bi bi-house"></i> Home
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'lista_materiais' %}">
+                            <i class="bi bi-box-seam"></i> Materiais
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'dashboard_movimentacoes' %}">
+                            <i class="bi bi-arrow-repeat"></i> Movimentações
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'painel_relatorios' %}">
+                            <i class="bi bi-file-earmark-text"></i> Relatórios
+                        </a>
+                    </li>
+                    <li class="nav-item dropdown">
+                        <a class="nav-link dropdown-toggle" href="#" id="navbarDropdown" data-bs-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+                            <i class="bi bi-gear"></i> Configurações
+                        </a>
+                        <div class="dropdown-menu" aria-labelledby="navbarDropdown">
+                            <a class="dropdown-item" href="{% url 'lista_usuarios' %}"><i class="bi bi-people-fill"></i> Usuários</a>
+                            <a class="dropdown-item" href="{% url 'lista_contratantes' %}"><i class="bi bi bi-buildings"></i> Contratantes</a>
+                            <a class="dropdown-item" href="{% url 'lista_contratos' %}"><i class="bi bi-file-earmark-text"></i> Contratos</a>
+                            <a class="dropdown-item" href="{% url 'lista_obras' %}"><i class="bi bi-building"></i> Obras</a>
+                        </div>
+                    </li>
+                    {% if user.is_superuser %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'admin:index' %}">
+                            <i class="bi bi-database-fill"></i> Admin
+                        </a>
+                    </li>
                     {% endif %}
-                    </ul>
-                </div>
-            </div>
-        </nav>
-        {% endblock header %}
-    </header>
-    <!-- Mensagens -->
-    <main role="main" class="flex-grow-1 container" style="max-width: 1400px; margin: 70px auto; padding: 0 10px 80px 10px;">
-        {% if messages %}
-            <div class="container mt-3">
-                {% for message in messages %}
-                    <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
-                        {{ message }}
-                        <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-                    </div>
-                {% endfor %}
-            </div>
-        {% endif %}
-        {% block content %}{% endblock %}
-    </main>
+                </ul>
 
-    <!-- Footer fixo na parte inferior -->
-    <footer class="fixed-bottom bg-light text-center py-2 border-top">
-        {% block footer %}
-            {% include "footer.html" %}
-        {% endblock footer %}
-    </footer>
+                <ul class="navbar-nav">
+                    <li class="nav-item">
+                        <span class="nav-link disabled">
+                            <i class="bi bi-person-circle"></i>
+                            {% with user.get_full_name|default:user.username as full_name %}
+                                {% if full_name %}
+                                    {% with full_name|split:" " as name_parts %}
+                                        {{ name_parts.0 }} {{ name_parts|last }}
+                                    {% endwith %}
+                                {% else %}
+                                    {{ user.username }}
+                                {% endif %}
+                            {% endwith %}
+                        </span>
+                    </li>
+                    {% if user.is_authenticated %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'logout' %}">
+                            <i class="bi bi-box-arrow-right"></i> Sair
+                        </a>
+                    </li>
+                    {% else %}
+                    <li class="nav-item">
+                        <a class="nav-link" href="{% url 'login' %}">
+                            <i class="bi bi-box-arrow-in-right"></i> Login
+                        </a>
+                    </li>
+                    {% endif %}
+                </ul>
+                {% endif %}
+            </div>
+        </div>
+    </nav>
+    {% endblock header %}
+</header>
 
-    <!-- Bootstrap Bundle with Popper -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"
-            integrity="sha384-C6RzsynM9kWDrMNeT87bh95OGNyZPhcTNXj1NW7RuBCsyN/o0jlpcV8Qyq46cDfL"
-            crossorigin="anonymous"></script>
-    {% block extra_js %}{% endblock extra_js %}
+<main role="main" class="flex-grow-1 container" style="max-width: 1400px; margin: 70px auto; padding: 0 10px 80px 10px;">
+    {% if messages %}
+    <div class="container mt-3">
+        {% for message in messages %}
+        <div class="alert alert-{{ message.tags }} alert-dismissible fade show" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+        </div>
+        {% endfor %}
+    </div>
+    {% endif %}
+    {% block content %}{% endblock %}
+</main>
+
+<footer class="fixed-bottom bg-light text-center py-1 border-top">
+    {% block footer %}
+        {% include "footer.html" %}
+    {% endblock footer %}
+</footer>
+
+<!-- Bootstrap JS (Cloudflare CDN) -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/bootstrap/5.3.2/js/bootstrap.bundle.min.js"></script>
+
+{% block extra_js %}{% endblock extra_js %}
 </body>
 </html>

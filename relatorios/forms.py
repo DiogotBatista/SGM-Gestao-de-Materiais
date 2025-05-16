@@ -37,15 +37,10 @@ class RelatorioMaterialForm(forms.Form):
         ('SAI', 'Saída'),
     ]
 
-    def __init__(self, *args, **kwargs):
-        super().__init__(*args, **kwargs)
-        self.fields['material'].label_from_instance = lambda obj: f"{obj.id} - {obj.nome}"
-
-    material = forms.ModelChoiceField(
-        queryset=Material.objects.all(),
+    material = forms.CharField(
         required=True,
         label='Material',
-        widget=forms.Select(attrs={'class': 'form-select'})
+        widget=forms.TextInput(attrs={'class': 'form-control', 'placeholder': 'Digite o nome ou código do material'})
     )
     tipo = forms.ChoiceField(
         choices=TIPO_CHOICES,

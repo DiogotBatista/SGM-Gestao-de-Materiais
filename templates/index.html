@@ -2,13 +2,7 @@
 {% load user_filters %}
 {% block title %}Página Principal - SGM{% endblock %}
 {% block content %}
-<div class="container mt-2">
-    {% if user.is_authenticated %}
-        <p class="small text-muted mb-1">
-            Usuário Logado: {{ user.get_full_name|default:user.first_name }}
-        </p>
-    {% endif %}
-</div>
+
 <div class="container mt-4">
     <header class="mb-4 text-center">
         <h1>SGM - Sistema de Gerenciamento de Materiais</h1>

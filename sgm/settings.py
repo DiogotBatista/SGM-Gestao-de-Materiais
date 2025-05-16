@@ -186,8 +186,6 @@ TIME_FORMAT = 'H:i'
 
 DATETIME_FORMAT = 'd/m/y - H:i'
 
-AUTH_USER_MODEL = 'usuarios.Usuario'
-
 LOGIN_URL = '/login/'
 LOGIN_REDIRECT_URL = '/'  # ou para outra página, como um dashboard
 LOGOUT_REDIRECT_URL = '/login/'

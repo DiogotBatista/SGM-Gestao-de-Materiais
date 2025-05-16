@@ -6,10 +6,9 @@ from .forms import MaterialForm
 from django.contrib import messages
 from django.db.models import Q
 
-
-
 class MaterialListView(AccessRequiredMixin, ListView):
     allowed_roles = []
+    view_name = 'lista_materiais'
     model = Material
     template_name = 'materiais/lista_material.html'
     context_object_name = 'materiais'
@@ -35,7 +34,8 @@ class MaterialListView(AccessRequiredMixin, ListView):
         return context
 
 class MaterialCreateView(AccessRequiredMixin, CreateView):
-    allowed_roles = ['Gestor', 'Almoxarife']
+    allowed_roles = []
+    view_name = 'criar_material'
     no_permission_redirect_url = 'lista_materiais'
     model = Material
     form_class = MaterialForm
@@ -51,7 +51,8 @@ class MaterialCreateView(AccessRequiredMixin, CreateView):
         return response
 
 class MaterialUpdateView(AccessRequiredMixin, UpdateView):
-    allowed_roles = ['Gestor', 'Almoxarife']
+    allowed_roles = []
+    view_name = 'atualizar_material'
     no_permission_redirect_url = 'lista_materiais'
     model = Material
     form_class = MaterialForm
@@ -66,7 +67,8 @@ class MaterialUpdateView(AccessRequiredMixin, UpdateView):
         return response
 
 class MaterialDeleteView(AccessRequiredMixin, DeleteView):
-    allowed_roles = ['Gestor']
+    allowed_roles = []
+    view_name = 'deletar_material'
     no_permission_redirect_url = 'lista_materiais'
     model = Material
     template_name = 'materiais/excluir_material.html'

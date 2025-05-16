@@ -29,8 +29,20 @@
     <div class="card mb-4">
       <div class="card-header">Dados da Movimentação</div>
       <div class="card-body">
-        {{ form.as_p }}
+        <div class="mb-3">
+          <label for="id_obra" class="form-label">Obra</label>
+          {{ form.obra|add_class:"form-control" }}
+        </div>
+        <div class="mb-3">
+          <label for="id_responsavel_movimentacao" class="form-label">Responsável pela Liberação/Recebimento</label>
+          {{ form.responsavel_movimentacao|add_class:"form-control" }}
+        </div>
+        <div class="mb-3">
+          <label for="id_observacoes" class="form-label">Observações</label>
+          {{ form.observacoes|add_class:"form-control" }}
+        </div>
       </div>
+
     </div>
 
     <!-- Seleção de Materiais -->

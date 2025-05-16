@@ -1,6 +1,6 @@
 from django.urls import path
 from .views import (MovimentoListView, MovimentoDetailView, MovimentacaoEntradaCreateView, MovimentacaoSaidaCreateView,
-                    MovimentacoesDashboardView, api_materials, MovimentacaoPrintView)
+                    MovimentacoesDashboardView, api_materials, MovimentacaoPrintView, GuiaMovimentacaoBrancoView)
 urlpatterns = [
     path('', MovimentacoesDashboardView.as_view(), name='dashboard_movimentacoes'),
     path('lista/', MovimentoListView.as_view(), name='lista_movimentacoes'),
@@ -11,4 +11,6 @@ urlpatterns = [
     path('api/materials/', api_materials, name='api_materials'),
     # Impressões
     path('imprimir/<int:pk>/', MovimentacaoPrintView.as_view(), name='movimentacao_print'),
+    path('movimentacoes/guia-em-branco/', GuiaMovimentacaoBrancoView.as_view(), name='guia_movimentacao_branco'),
+
 ]

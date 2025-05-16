@@ -8,11 +8,13 @@ from django.db.models import Q
 
 class MenuView(AccessRequiredMixin, TemplateView):
     allowed_roles = []
+    view_name = 'menu_configuracoes'
     template_name = 'configuracoes/menu.html'
 
 # VIEWS DOS CONTRATANTES
 class ContratanteListView(AccessRequiredMixin, ListView):
     allowed_roles = []
+    view_name = 'lista_contratantes'
     model = Contratante
     template_name = 'configuracoes/contratantes/lista_contratante.html'
     context_object_name = 'contratantes'
@@ -30,7 +32,8 @@ class ContratanteListView(AccessRequiredMixin, ListView):
         return queryset
 
 class ContratanteCreateView(AccessRequiredMixin, CreateView):
-    allowed_roles = ['Gestor']
+    allowed_roles = []
+    view_name = 'criar_contratante'
     no_permission_redirect_url = 'lista_contratantes'
     model = Contratante
     form_class = ContratanteForm
@@ -44,7 +47,8 @@ class ContratanteCreateView(AccessRequiredMixin, CreateView):
         return super().form_valid(form)
 
 class ContratanteUpdateView(AccessRequiredMixin, UpdateView):
-    allowed_roles = ['Gestor']
+    allowed_roles = []
+    view_name = 'editar_contratante'
     no_permission_redirect_url = 'lista_contratantes'
     model = Contratante
     form_class = ContratanteForm
@@ -56,7 +60,8 @@ class ContratanteUpdateView(AccessRequiredMixin, UpdateView):
         return super().form_valid(form)
 
 class ContratanteDeleteView(AccessRequiredMixin, DeleteView):
-    allowed_roles = ['Gestor']
+    allowed_roles = []
+    view_name = 'deletar_contratante'
     no_permission_redirect_url = 'lista_contratantes'
     model = Contratante
     template_name = 'configuracoes/contratantes/excluir_contratante.html'
@@ -67,10 +72,10 @@ class ContratanteDeleteView(AccessRequiredMixin, DeleteView):
         messages.success(self.request, "Empresa excluída com sucesso!")
         return response
 
-
 # VIEWS DOS CONTRATOS
 class ContratosListView(AccessRequiredMixin, ListView):
     allowed_roles = []
+    view_name = 'lista_contratos'
     model = Contrato
     template_name = 'configuracoes/contratos/lista_contratos.html'
     context_object_name = 'contratos'
@@ -88,7 +93,8 @@ class ContratosListView(AccessRequiredMixin, ListView):
         return queryset
 
 class ContratosCreateView(AccessRequiredMixin, CreateView):
-    allowed_roles = ['Gestor']
+    allowed_roles = []
+    view_name = 'criar_contrato'
     no_permission_redirect_url = 'lista_contratos'
     model = Contrato
     form_class = ContratoForm
@@ -102,7 +108,8 @@ class ContratosCreateView(AccessRequiredMixin, CreateView):
         return super().form_valid(form)
 
 class ContratoUpdateView(AccessRequiredMixin, UpdateView):
-    allowed_roles = ['Gestor']
+    allowed_roles = []
+    view_name = 'atualizar_contrato'
     no_permission_redirect_url = 'lista_contratos'
     model = Contrato
     form_class = ContratoForm
@@ -114,7 +121,8 @@ class ContratoUpdateView(AccessRequiredMixin, UpdateView):
         return super().form_valid(form)
 
 class ContratoDeleteView(AccessRequiredMixin, DeleteView):
-    allowed_roles = ['Gestor']
+    allowed_roles = []
+    view_name = 'deletar_contrato'
     no_permission_redirect_url = 'lista_contratos'
     model = Contrato
     template_name = 'configuracoes/contratos/excluir_contratos.html'
@@ -125,10 +133,10 @@ class ContratoDeleteView(AccessRequiredMixin, DeleteView):
         messages.success(self.request, "Contrato excluído com sucesso!")
         return response
 
-
 # VIEWS DAS OBRAS
 class ObrasListView(AccessRequiredMixin, ListView):
     allowed_roles = []
+    view_name = 'lista_obras'
     model = Obra
     template_name = 'configuracoes/obras/lista_obras.html'
     context_object_name = 'obras'
@@ -146,7 +154,8 @@ class ObrasListView(AccessRequiredMixin, ListView):
         return queryset
 
 class ObrasCreateView(AccessRequiredMixin, CreateView):
-    allowed_roles = ['Gestor']
+    allowed_roles = []
+    view_name = 'criar_obra'
     no_permission_redirect_url = 'lista_obras'
     model = Obra
     form_class = ObraForm
@@ -160,7 +169,8 @@ class ObrasCreateView(AccessRequiredMixin, CreateView):
         return super().form_valid(form)
 
 class ObrasUpdateView(AccessRequiredMixin, UpdateView):
-    allowed_roles = ['Gestor']
+    allowed_roles = []
+    view_name = 'atualizar_obra'
     no_permission_redirect_url = 'lista_obras'
     model = Obra
     form_class = ObraForm
@@ -172,7 +182,8 @@ class ObrasUpdateView(AccessRequiredMixin, UpdateView):
         return super().form_valid(form)
 
 class ObrasDeleteView(AccessRequiredMixin, DeleteView):
-    allowed_roles = ['Gestor']
+    allowed_roles = []
+    view_name = 'deletar_obra'
     no_permission_redirect_url = 'lista_obras'
     model = Obra
     template_name = 'configuracoes/obras/excluir_obras.html'

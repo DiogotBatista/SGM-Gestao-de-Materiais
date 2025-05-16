@@ -12,6 +12,8 @@ from reportlab.lib.pagesizes import A4, landscape
 from reportlab.lib import colors
 from reportlab.lib.styles import getSampleStyleSheet
 import io
+from materiais.models import Material
+
 
 @login_required
 def painel_relatorios(request):
@@ -56,13 +58,24 @@ def painel_relatorios(request):
     elif tipo == 'material':
         form = RelatorioMaterialForm(request.GET)
         if form.is_valid():
-            material = form.cleaned_data['material']
+            material_input = form.cleaned_data['material']
             tipo_mov = form.cleaned_data.get('tipo')
-            itens = MovimentoItem.objects.filter(material=material)
-            if tipo_mov:
-                itens = itens.filter(tipo=tipo_mov)
-            itens = itens.select_related('movimentacao', 'movimentacao__obra', 'movimentacao__obra__contrato')
-            consulta_realizada = True
+
+            # Tenta extrair o ID do material no formato "123 - Parafuso"
+            import re
+            match = re.match(r"(\d+)", material_input)
+            material_id = int(match.group(1)) if match else None
+
+            material = Material.objects.filter(id=material_id).first()
+
+            if material:
+                itens = MovimentoItem.objects.filter(material=material)
+                if tipo_mov:
+                    itens = itens.filter(tipo=tipo_mov)
+                itens = itens.select_related('movimentacao', 'movimentacao__obra', 'movimentacao__obra__contrato')
+                consulta_realizada = True
+            else:
+                form.add_error('material', 'Material não encontrado.')
 
     if itens is not None:
         itens = itens.order_by('-movimentacao__data_movimentacao')
@@ -89,7 +102,6 @@ def painel_relatorios(request):
         'export_pdf_url': export_pdf_url,
     }
     return render(request, 'relatorios/painel.html', context)
-
 
 @login_required
 def exportar_excel(request):
@@ -163,7 +175,6 @@ def exportar_excel(request):
     response['Content-Disposition'] = 'attachment; filename=relatorio_materiais.xlsx'
     wb.save(response)
     return response
-
 
 @login_required
 def exportar_pdf(request):

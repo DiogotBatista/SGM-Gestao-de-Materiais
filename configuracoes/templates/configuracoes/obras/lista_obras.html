@@ -34,7 +34,6 @@
                     <th class="text-center">Contrato</th>
                     <th class="text-center">Contratante</th>
                     <th class="text-center">Local</th>
-                    <th class="text-center">Descrição</th>
                     <th class="text-center">Ativo</th>
                     <th class="text-center" style="min-width: 170px;">Ações</th>
 
@@ -48,7 +47,6 @@
                         <td class="text-center">{{ obra.contrato }}</td>
                         <td class="text-center">{{ obra.contrato.contratante.nome }}</td>
                         <td class="text-center">{{ obra.local }}</td>
-                        <td class="text-center">{{ obra.descricao |default:""}}</td>
                         <td class="text-center">
                         {% if obra.ativo %}
                             <span class="badge bg-success">Ativo</span>
