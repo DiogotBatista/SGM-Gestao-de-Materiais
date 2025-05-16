@@ -26,6 +26,14 @@
       </p>
       <p><strong>Resp. pela Lib./Rec.:</strong> {{ movimentacao.responsavel_movimentacao|default:"-" }}</p>
       <p><strong>Observações:</strong> {{ movimentacao.observacoes|default:"-" }}</p>
+      {% if movimentacao.link_guia_digitalizada %}
+        <p><strong>Guia Digitalizada:</strong>
+          <a href="{{ movimentacao.link_guia_digitalizada }}" target="_blank" class="btn btn-outline-success btn-sm ms-2">
+            <i class="bi bi-file-earmark-pdf"></i> Visualizar Arquivo
+          </a>
+        </p>
+      {% endif %}
+
     </div>
   </div>
 

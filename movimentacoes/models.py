@@ -25,6 +25,8 @@ class Movimentacao(models.Model):
         verbose_name="Doc. de Origem",
         help_text="Informe o documento de origem, ex: NF, devolução, etc."
     )
+    link_guia_digitalizada = models.URLField("Link do Arquivo Digitalizado", blank=True, null=True)
+    guia_drive_id = models.CharField("ID do Arquivo no Drive", max_length=100, blank=True, null=True)
     data_movimentacao = models.DateTimeField(auto_now_add=True, verbose_name='Data da Movimentação')
     realizado_por = models.ForeignKey(
         settings.AUTH_USER_MODEL,
@@ -56,7 +58,6 @@ class Movimentacao(models.Model):
         if first_item:
             return first_item.get_tipo_display()
         return "N/A"
-
 
 class MovimentoItem(models.Model):
     ENTRADA = 'ENT'

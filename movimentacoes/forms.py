@@ -1,6 +1,7 @@
 from django import forms
 from django.forms.models import BaseInlineFormSet, inlineformset_factory
 from .models import MovimentoItem, Movimentacao
+from django.core.exceptions import ValidationError
 
 class MovimentoItemEntradaForm(forms.ModelForm):
     class Meta:
@@ -59,6 +60,8 @@ class MovimentoItemSaidaForm(forms.ModelForm):
         return super().save(commit=commit)
 
 class MovimentacaoEntradaForm(forms.ModelForm):
+    guia_digitalizada = forms.FileField(label="Guia Digitalizada", required=False)
+
     class Meta:
         model = Movimentacao
         fields = ['documento', 'responsavel_movimentacao', 'observacoes']
@@ -75,11 +78,18 @@ class MovimentacaoEntradaForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Torna o campo "documento" obrigatório para entrada
         self.fields['documento'].required = True
         self.fields['documento'].error_messages = {'required': 'O documento de origem é obrigatório.'}
 
+    def clean_guia_digitalizada(self):
+        arquivo = self.cleaned_data.get('guia_digitalizada')
+        if arquivo and not arquivo.name.lower().endswith('.pdf'):
+            raise ValidationError("Apenas arquivos PDF são permitidos.")
+        return arquivo
+
 class MovimentacaoSaidaForm(forms.ModelForm):
+    guia_digitalizada = forms.FileField(label="Guia Digitalizada", required=False)
+
     class Meta:
         model = Movimentacao
         fields = ['obra', 'responsavel_movimentacao', 'observacoes']
@@ -93,11 +103,16 @@ class MovimentacaoSaidaForm(forms.ModelForm):
 
     def __init__(self, *args, **kwargs):
         super().__init__(*args, **kwargs)
-        # Torna o campo "obra" obrigatório para saída
         self.fields['obra'].required = True
         self.fields['obra'].error_messages = {'required': 'A obra é obrigatória para a saída.'}
         self.fields['obra'].queryset = self.fields['obra'].queryset.filter(ativo=True)
         self.fields['obra'].label_from_instance = lambda obj: f"{obj.codigo} - ({obj.contrato.numero})"
+
+    def clean_guia_digitalizada(self):
+        arquivo = self.cleaned_data.get('guia_digitalizada')
+        if arquivo and not arquivo.name.lower().endswith('.pdf'):
+            raise ValidationError("Apenas arquivos PDF são permitidos.")
+        return arquivo
 
 # Formset customizado para validação de itens de movimentação de saída
 class BaseMovimentoItemSaidaFormSet(BaseInlineFormSet):

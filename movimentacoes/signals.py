@@ -18,11 +18,11 @@ def update_material_quantity(sender, instance, **kwargs):
     novo_saldo = material.saldo_inicial + entradas - saidas
     Material.objects.filter(pk=material.pk).update(saldo_atual=novo_saldo)
 
-@receiver(post_save, sender=MovimentoItem)
-def gerar_codigo_movimentacao(sender, instance, **kwargs):
-    movimentacao = instance.movimentacao
-    if not movimentacao.codigo and movimentacao.pk:
-        tipo = instance.tipo
-        prefixo = 'MVE' if tipo == 'ENT' else 'MVS'
-        movimentacao.codigo = f"{prefixo}{str(movimentacao.pk).zfill(10)}"
-        movimentacao.save(update_fields=['codigo'])
+# @receiver(post_save, sender=MovimentoItem)
+# def gerar_codigo_movimentacao(sender, instance, **kwargs):
+#     movimentacao = instance.movimentacao
+#     if not movimentacao.codigo and movimentacao.pk:
+#         tipo = instance.tipo
+#         prefixo = 'MVE' if tipo == 'ENT' else 'MVS'
+#         movimentacao.codigo = f"{prefixo}{str(movimentacao.pk).zfill(10)}"
+#         movimentacao.save(update_fields=['codigo'])

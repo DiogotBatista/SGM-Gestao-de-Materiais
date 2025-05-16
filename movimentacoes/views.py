@@ -26,6 +26,7 @@ from reportlab.lib.pagesizes import A4
 from reportlab.lib.units import cm
 from io import BytesIO
 from datetime import datetime
+from .utils_google_drive import upload_file_to_drive
 
 class MovimentacoesDashboardView(AccessRequiredMixin, TemplateView):
     allowed_roles = []
@@ -94,17 +95,32 @@ class MovimentacaoEntradaCreateView(AccessRequiredMixin, CreateView):
         form.instance.realizado_por = self.request.user
         self.object = form.save(commit=False)
 
-        # Obtenha os materiais enviados pelo formulário
         material_ids = self.request.POST.getlist('material_id[]')
         quantidades = self.request.POST.getlist('quantidade[]')
 
-        # Verifica se há pelo menos um material
         if not material_ids:
             form.add_error(None, "Adicione ao menos um material.")
             return self.form_invalid(form)
 
         with transaction.atomic():
-            self.object.save()  # Salva a movimentação somente se houver material
+            self.object.save()
+
+            # Gera o código da movimentação
+            if not self.object.codigo:
+                prefixo = 'MVE'
+                self.object.codigo = f"{prefixo}{str(self.object.pk).zfill(10)}"
+                self.object.save(update_fields=['codigo'])
+
+            # Upload da guia digitalizada
+            arquivo = self.request.FILES.get('guia_digitalizada')
+            if arquivo:
+                hoje_str = datetime.now().strftime('%Y%m%d')
+                nome = f"guia_{self.object.codigo}_{hoje_str}.pdf"
+                link, file_id = upload_file_to_drive(arquivo, nome, replace_file_id=self.object.guia_drive_id)
+                self.object.link_guia_digitalizada = link
+                self.object.guia_drive_id = file_id
+                self.object.save(update_fields=['link_guia_digitalizada', 'guia_drive_id'])
+
             for mat_id, qtde in zip(material_ids, quantidades):
                 MovimentoItem.objects.create(
                     movimentacao=self.object,
@@ -112,14 +128,19 @@ class MovimentacaoEntradaCreateView(AccessRequiredMixin, CreateView):
                     quantidade=qtde,
                     tipo=MovimentoItem.ENTRADA
                 )
+
         messages.success(self.request, "Movimentação de entrada registrada com sucesso.")
         return redirect('detalhe_movimentacoes', pk=self.object.pk)
 
-
     def form_invalid(self, form):
         context = self.get_context_data(form=form)
-        # Caso haja erros adicionais, eles podem ser tratados aqui
+        context['materiais_retentos'] = list(zip(
+            self.request.POST.getlist('material_id[]'),
+            self.request.POST.getlist('quantidade[]'),
+            self.request.POST.getlist('material_nome[]')
+        ))
         return self.render_to_response(context)
+
 
 class MovimentacaoSaidaCreateView(AccessRequiredMixin, CreateView):
     allowed_roles = []
@@ -132,22 +153,38 @@ class MovimentacaoSaidaCreateView(AccessRequiredMixin, CreateView):
 
     def get_context_data(self, **kwargs):
         context = super().get_context_data(**kwargs)
-        # Se não for utilizar formset dinâmico via JavaScript, não precisa incluir formset no contexto.
         return context
 
     def form_valid(self, form):
         form.instance.realizado_por = self.request.user
         self.object = form.save(commit=False)
 
-        # Verifica se há pelo menos um material selecionado
         material_ids = self.request.POST.getlist('material_id[]')
         quantidades = self.request.POST.getlist('quantidade[]')
+
         if not material_ids:
             form.add_error(None, "Adicione ao menos um material.")
             return self.form_invalid(form)
 
         with transaction.atomic():
             self.object.save()
+
+            # Gera o código da movimentação
+            if not self.object.codigo:
+                prefixo = 'MVS'
+                self.object.codigo = f"{prefixo}{str(self.object.pk).zfill(10)}"
+                self.object.save(update_fields=['codigo'])
+
+            # Upload da guia digitalizada
+            arquivo = self.request.FILES.get('guia_digitalizada')
+            if arquivo:
+                hoje_str = datetime.now().strftime('%Y%m%d')
+                nome = f"guia_{self.object.codigo}_{hoje_str}.pdf"
+                link, file_id = upload_file_to_drive(arquivo, nome, replace_file_id=self.object.guia_drive_id)
+                self.object.link_guia_digitalizada = link
+                self.object.guia_drive_id = file_id
+                self.object.save(update_fields=['link_guia_digitalizada', 'guia_drive_id'])
+
             for mat_id, qtde in zip(material_ids, quantidades):
                 try:
                     material = Material.objects.get(id=mat_id)
@@ -178,14 +215,19 @@ class MovimentacaoSaidaCreateView(AccessRequiredMixin, CreateView):
                     quantidade=qtde_int,
                     tipo=MovimentoItem.SAIDA
                 )
+
         messages.success(self.request, "Movimentação de saída registrada com sucesso.")
-        # return super().form_valid(form)
         return redirect('detalhe_movimentacoes', pk=self.object.pk)
 
-
     def form_invalid(self, form):
-        messages.warning(self.request, "Erro ao processar a movimentação de saída.")
-        return self.render_to_response(self.get_context_data(form=form))
+        context = self.get_context_data(form=form)
+        context['materiais_retentos'] = list(zip(
+            self.request.POST.getlist('material_id[]'),
+            self.request.POST.getlist('quantidade[]'),
+            self.request.POST.getlist('material_nome[]')
+        ))
+        return self.render_to_response(context)
+
 
 # API que pega os materiais cadastrados
 def api_materials(request):

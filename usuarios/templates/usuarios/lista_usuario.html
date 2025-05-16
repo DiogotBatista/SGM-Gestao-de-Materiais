@@ -27,7 +27,7 @@
                     <th class="text-center">Cod.</th>
                     <th class="text-center">Nome Completo</th>
                     <th class="text-center">Email</th>
-                    <th class="text-center">Cargo</th>
+                    <th class="text-center">Função</th>
                     <th class="text-center">Status</th>
                     <th class="text-center">Ações</th>
                 </tr>
@@ -38,7 +38,7 @@
                     <td class="text-center">{{ usuario.id }}</td>
                     <td>{{ usuario.get_full_name }}</td>
                     <td>{{ usuario.email }}</td>
-                    <td class="text-center">{{ usuario.cargo }}</td>
+                    <td class="text-center">{{ usuario.userprofile.cargo.nome|default:"-" }}</td>
                     <td class="text-center">
                         {% if usuario.is_active %}
                             <span class="badge bg-success">Ativo</span>
