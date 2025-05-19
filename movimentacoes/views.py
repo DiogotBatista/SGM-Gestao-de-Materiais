@@ -141,7 +141,6 @@ class MovimentacaoEntradaCreateView(AccessRequiredMixin, CreateView):
         ))
         return self.render_to_response(context)
 
-
 class MovimentacaoSaidaCreateView(AccessRequiredMixin, CreateView):
     allowed_roles = []
     view_name = 'criar_movimentacao_saida'

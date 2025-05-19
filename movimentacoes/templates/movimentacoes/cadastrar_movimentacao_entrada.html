@@ -43,6 +43,11 @@
       <div class="mb-3">
         <label for="id_guia_digitalizada" class="form-label">Guia Digitalizada (PDF)</label>
         <input type="file" name="guia_digitalizada" accept=".pdf" class="form-control" id="id_guia_digitalizada">
+        {% if form.errors %}
+          <small class="text-danger d-block mt-1">
+            Caso você tenha selecionado um arquivo anteriormente, será necessário escolhê-lo novamente.
+          </small>
+        {% endif %}
       </div>
     </div>
   </div>
@@ -176,11 +181,27 @@ $(document).ready(function(){
     });
 
     // Spinner ao enviar
-    $("#movimentacaoForm").on("submit", function () {
-      $("#btnText").text(" Salvando...");
-      $("#loadingSpinner").removeClass("d-none");
-      $("#submitBtn").prop("disabled", true);
-    });
+    $("#movimentacaoForm").on("submit", function (e) {
+  const arquivoAnexado = $("#id_guia_digitalizada").val();  // verifica se há um arquivo
+
+  let mensagem = "Essa movimentação não poderá ser editada ou excluída depois.";
+
+  if (!arquivoAnexado) {
+    mensagem = "Você não anexou nenhum arquivo PDF.\n\n" + mensagem;
+  }
+
+  const confirmado = confirm(mensagem);
+
+  if (!confirmado) {
+    e.preventDefault();
+    return false;
+  }
+
+  $("#btnText").text(" Salvando...");
+  $("#loadingSpinner").removeClass("d-none");
+  $("#submitBtn").prop("disabled", true);
+});
+
 });
 </script>
 {% endblock %}
