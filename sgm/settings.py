@@ -101,7 +101,7 @@ WSGI_APPLICATION = 'sgm.wsgi.application'
 
 
 
-# # BANCO DE DADOS PARA PRODUÇÃO
+# # BANCO DE DADOS MYSQL PARA PRODUÇÃO
 # DATABASES = {
 #     'default': {
 #         'ENGINE': 'django.db.backends.mysql',
@@ -112,6 +112,19 @@ WSGI_APPLICATION = 'sgm.wsgi.application'
 #         'PORT': config('DB_PORT', default='3306'),
 #     }
 # }
+
+# BANCO DE DADOS POSTGRESQL PARA PRODUÇÃO
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql',
+#         'NAME': config('DB_NAME'),
+#         'USER': config('DB_USER'),
+#         'PASSWORD': config('DB_PASSWORD'),
+#         'HOST': config('DB_HOST', default='localhost'),
+#         'PORT': config('DB_PORT', default='5432'),
+#     }
+# }
+
 
 #DB de programação
 DATABASES = {
