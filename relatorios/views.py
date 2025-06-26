@@ -13,7 +13,7 @@ from reportlab.lib import colors
 from reportlab.lib.styles import getSampleStyleSheet
 import io
 from materiais.models import Material
-
+from datetime import datetime, time
 
 @login_required
 def painel_relatorios(request):
@@ -22,6 +22,8 @@ def painel_relatorios(request):
     form = None
     page_obj = None
     consulta_realizada = False
+    debug_datas = None
+
     export_url = f"/relatorios/exportar_excel?{request.GET.urlencode()}"
     export_pdf_url = f"/relatorios/exportar_pdf?{request.GET.urlencode()}"
 
@@ -50,10 +52,18 @@ def painel_relatorios(request):
         if form.is_valid():
             data_inicio = form.cleaned_data['data_inicio']
             data_fim = form.cleaned_data['data_fim']
+
+            dt_inicio = datetime.combine(data_inicio, time.min)  # 00:00:00
+            dt_fim = datetime.combine(data_fim, time.max)        # 23:59:59.999999
+
             itens = MovimentoItem.objects.filter(
-                movimentacao__data_movimentacao__date__range=(data_inicio, data_fim)
+                movimentacao__data_movimentacao__range=(dt_inicio, dt_fim)
             ).select_related('material', 'movimentacao', 'movimentacao__obra', 'movimentacao__obra__contrato')
             consulta_realizada = True
+            debug_datas = {
+                'inicio': dt_inicio.strftime('%d/%m/%Y %H:%M:%S'),
+                'fim': dt_fim.strftime('%d/%m/%Y %H:%M:%S')
+            }
 
     elif tipo == 'material':
         form = RelatorioMaterialForm(request.GET)
@@ -61,7 +71,6 @@ def painel_relatorios(request):
             material_input = form.cleaned_data['material']
             tipo_mov = form.cleaned_data.get('tipo')
 
-            # Tenta extrair o ID do material no formato "123 - Parafuso"
             import re
             match = re.match(r"(\d+)", material_input)
             material_id = int(match.group(1)) if match else None
@@ -100,6 +109,7 @@ def painel_relatorios(request):
         'mostrar_todos_os_tipos': tipo == 'material' and request.GET.get('tipo') == '',
         'export_url': export_url,
         'export_pdf_url': export_pdf_url,
+        'debug_datas': debug_datas,
     }
     return render(request, 'relatorios/painel.html', context)
 
@@ -130,11 +140,15 @@ def exportar_excel(request):
     elif tipo == 'data':
         form = RelatorioDataForm(request.GET)
         if form.is_valid():
+            from datetime import datetime, time
             data_inicio = form.cleaned_data['data_inicio']
             data_fim = form.cleaned_data['data_fim']
+            dt_inicio = datetime.combine(data_inicio, time.min)
+            dt_fim = datetime.combine(data_fim, time.max)
             itens = MovimentoItem.objects.filter(
-                movimentacao__data_movimentacao__date__range=(data_inicio, data_fim)
+                movimentacao__data_movimentacao__range=(dt_inicio, dt_fim)
             )
+
 
     elif tipo == 'material':
         form = RelatorioMaterialForm(request.GET)
@@ -187,17 +201,25 @@ def exportar_pdf(request):
         if form.is_valid():
             obra = form.cleaned_data['obra']
             itens = MovimentoItem.objects.filter(movimentacao__obra=obra, tipo='SAI')
+
     elif tipo == 'contrato':
         form = RelatorioContratoForm(request.GET)
         if form.is_valid():
             contrato = form.cleaned_data['contrato']
             itens = MovimentoItem.objects.filter(movimentacao__obra__contrato=contrato, tipo='SAI')
+
     elif tipo == 'data':
         form = RelatorioDataForm(request.GET)
         if form.is_valid():
+            from datetime import datetime, time
             data_inicio = form.cleaned_data['data_inicio']
             data_fim = form.cleaned_data['data_fim']
-            itens = MovimentoItem.objects.filter(movimentacao__data_movimentacao__date__range=(data_inicio, data_fim))
+            dt_inicio = datetime.combine(data_inicio, time.min)
+            dt_fim = datetime.combine(data_fim, time.max)
+            itens = MovimentoItem.objects.filter(
+                movimentacao__data_movimentacao__range=(dt_inicio, dt_fim)
+            )
+
     elif tipo == 'material':
         form = RelatorioMaterialForm(request.GET)
         if form.is_valid():

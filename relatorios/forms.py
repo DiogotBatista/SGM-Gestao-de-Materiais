@@ -22,11 +22,13 @@ class RelatorioDataForm(forms.Form):
     data_inicio = forms.DateField(
         required=True,
         label='Data Início',
+        input_formats=['%Y-%m-%d'],
         widget=forms.DateInput(attrs={'type': 'date', 'class': 'form-control', 'placeholder': 'Data inicial'})
     )
     data_fim = forms.DateField(
         required=True,
         label='Data Fim',
+        input_formats=['%Y-%m-%d'],
         widget=forms.DateInput(attrs={'type': 'date', 'class': 'form-control', 'placeholder': 'Data final'})
     )
 
