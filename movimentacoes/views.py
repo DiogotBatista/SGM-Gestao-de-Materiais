@@ -339,4 +339,11 @@ class GuiaMovimentacaoBrancoView(View):
         response['Content-Disposition'] = f'inline; filename="{filename}"'
         return response
 
+from django.http import HttpResponse
+
+def view_com_erro(request):
+    x = 1 / 0  # isso vai causar ZeroDivisionError
+    return HttpResponse("Isso nunca será exibido.")
+
+
 

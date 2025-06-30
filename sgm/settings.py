@@ -55,6 +55,7 @@ INSTALLED_APPS = [
     'movimentacoes',
     'usuarios',
     'configuracoes',
+    'logs',
     'relatorios',
     'django.contrib.admin',
     'django.contrib.auth',
@@ -65,6 +66,7 @@ INSTALLED_APPS = [
 ]
 
 MIDDLEWARE = [
+    'logs.middleware.erro_logger.LogErroMiddleware', # Tratamento de erros
     'django.middleware.security.SecurityMiddleware',
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.common.CommonMiddleware',
